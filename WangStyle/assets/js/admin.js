@@ -48,36 +48,29 @@ document.addEventListener('DOMContentLoaded', () => {
 				$nav = $('<nav id="typecho-nav-list"></nav>').appendTo('body');
 			}
 			$nav.addClass('ws-sidebar').html(r + o);
-			if (!$('.proup').length) {
-				$('body').append('<div class="proup"></div>');
+
+			/* 汉堡按钮、暗色按钮固定放到页面左上角 */
+			if (!$('#tonav').length) {
+				$('body').append('<a id="tonav" href="javascript:;" title="菜单"><i class="zm zm-caidan"></i></a>');
+			}
+			if (!$('#dark-mode').length) {
+				$('body').append('<a id="dark-mode" href="javascript:;" title="暗色模式"><i class="zm zm-heiye"></i></a>');
 			}
 
-			var $operate = $('.typecho-head-nav .operate').eq(0);
-			if ($operate.length) {
-				$operate.prepend('<a id="dark-mode" href="javascript:;"><i class="zm zm-heiye"></i></a>');
-				$operate.prepend('<a id="tonav" href="javascript:;" title="菜单"><i class="zm zm-caidan"></i></a>');
+			/* PC 端（宽屏 >=768px）侧边栏默认常驻显示；移动端默认收起 */
+			if ($(window).width() >= 768) {
+				$nav.addClass('ws-open');
+				$('body').addClass('ws-nav-open');
 			}
 		}
 
-		/* 用事件委托绑定开关（按钮是动态注入的，避免直接绑定失效） */
+		/* 汉堡按钮：切换侧边栏（不使用遮罩） */
 		$('body').on('click', '#tonav', function (event) {
 			event.preventDefault();
 			event.stopPropagation();
 			$('#typecho-nav-list').toggleClass('ws-open');
-			$('.proup').toggleClass('ws-open');
+			$('body').toggleClass('ws-nav-open');
 			return false;
-		});
-		$('body').on('click', '.proup', function () {
-			$('#typecho-nav-list').removeClass('ws-open');
-			$(this).removeClass('ws-open');
-		});
-		$(document).on('click.wsSidebar', function (event) {
-			var $nav = $('#typecho-nav-list');
-			if ($nav.hasClass('ws-open') && !$nav.is(event.target) && $nav.has(event.target).length === 0 &&
-				!$(event.target).closest('#tonav').length) {
-				$nav.removeClass('ws-open');
-				$('.proup').removeClass('ws-open');
-			}
 		});
 
 		if ('' != UserGroup && MenuTitle == '个人设置') {
