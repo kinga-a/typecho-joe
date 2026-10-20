@@ -457,10 +457,27 @@ ul {
 
 /* Typecho 1.3 兼容：隐藏顶栏原生 details 菜单按钮，改用 WangStyle 的 #tonav 侧滑菜单 */
 .typecho-head-nav .menu-bar {
-	display: none;
+	display: none !important;
 }
 .typecho-head-nav menu {
 	display: block;
+}
+/* 侧滑栏：默认隐藏，加 .ws-open 才展开（用 !important 强制，避免被旧规则挡住） */
+#typecho-nav-list.ws-sidebar {
+	display: none;
+}
+#typecho-nav-list.ws-sidebar.ws-open {
+	display: block !important;
+}
+.proup {
+	display: none;
+}
+.proup.ws-open {
+	display: block !important;
+}
+#tonav {
+	display: inline-block;
+	cursor: pointer;
 }
 .fullscreen #tab-files {
 	right: 0;

@@ -5,7 +5,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  *
  * @package WangStyle
  * @author 小王先森
- * @version 6.4.0
+ * @version 6.4.1
  * @link https://xwsir.cn
  * @dependence 1.3.0
  */
@@ -129,9 +129,9 @@ class WangStyle_Plugin implements Typecho_Plugin_Interface
             } else {
                 $qqImage = $url . 'img/user.png';
             }
-            $head = $head . '<link rel="stylesheet" href="' . $url . 'css/admin.css?v=6.4.0">
+            $head = $head . '<link rel="stylesheet" href="' . $url . 'css/admin.css?v=6.4.1">
                 <link rel="stylesheet" href="//at.alicdn.com/t/font_1159885_m16xrs3st3k.css">
-                <script src="' . $url . 'js/admin.js?v=6.4.0"></script>
+                <script src="' . $url . 'js/admin.js?v=6.4.1"></script>
                 <script>
                     var UserLink="' . Helper::options()->adminUrl . '/profile.php";
                     var UserPic="' . $qqImage . '";

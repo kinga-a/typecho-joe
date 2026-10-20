@@ -47,32 +47,42 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (!$nav.length) {
 				$nav = $('<nav id="typecho-nav-list"></nav>').appendTo('body');
 			}
-			$nav.html(r + o);
+			$nav.addClass('ws-sidebar').html(r + o);
+			if (!$('.proup').length) {
+				$('body').append('<div class="proup"></div>');
+			}
 
 			var $operate = $('.typecho-head-nav .operate').eq(0);
 			if ($operate.length) {
 				$operate.prepend('<a id="dark-mode" href="javascript:;"><i class="zm zm-heiye"></i></a>');
-				$operate.prepend('<a id="tonav" href="javascript:;"><i class="zm zm-caidan"></i></a>');
-				$nav.before('<div class="proup"></div>');
-
-				$('#tonav').click(function (event) {
-					event.stopPropagation();
-					$nav.toggle();
-					$('.proup').toggle();
-				});
-				$(document).click(function (event) {
-					var _con = $nav;
-					if (!_con.is(event.target) && _con.has(event.target).length == 0) {
-						$nav.hide();
-						$('.proup').hide();
-					}
-				});
+				$operate.prepend('<a id="tonav" href="javascript:;" title="菜单"><i class="zm zm-caidan"></i></a>');
 			}
+		}
 
-			if (MenuTitle == '个人设置') {
-				$('.profile-avatar:eq(0)').attr('src', UserPic + 's=640');
-				$('.typecho-page-main div:eq(0)').attr('style', 'text-align:center');
+		/* 用事件委托绑定开关（按钮是动态注入的，避免直接绑定失效） */
+		$('body').on('click', '#tonav', function (event) {
+			event.preventDefault();
+			event.stopPropagation();
+			$('#typecho-nav-list').toggleClass('ws-open');
+			$('.proup').toggleClass('ws-open');
+			return false;
+		});
+		$('body').on('click', '.proup', function () {
+			$('#typecho-nav-list').removeClass('ws-open');
+			$(this).removeClass('ws-open');
+		});
+		$(document).on('click.wsSidebar', function (event) {
+			var $nav = $('#typecho-nav-list');
+			if ($nav.hasClass('ws-open') && !$nav.is(event.target) && $nav.has(event.target).length === 0 &&
+				!$(event.target).closest('#tonav').length) {
+				$nav.removeClass('ws-open');
+				$('.proup').removeClass('ws-open');
 			}
+		});
+
+		if ('' != UserGroup && MenuTitle == '个人设置') {
+			$('.profile-avatar:eq(0)').attr('src', UserPic + 's=640');
+			$('.typecho-page-main div:eq(0)').attr('style', 'text-align:center');
 		}
 
 		/* 展开当前所在分组 */
