@@ -454,6 +454,14 @@ ul {
 .main.main-in {
 	width: 100% !important;
 }
+
+/* Typecho 1.3 兼容：隐藏顶栏原生 details 菜单按钮，改用 WangStyle 的 #tonav 侧滑菜单 */
+.typecho-head-nav .menu-bar {
+	display: none;
+}
+.typecho-head-nav menu {
+	display: block;
+}
 .fullscreen #tab-files {
 	right: 0;
 }

@@ -1,4 +1,5 @@
 <?php
+// WangStyle dashboard (legacy, no longer deployed by the plugin since v6.4.0)
 include 'common.php';
 include 'header.php';
 include 'menu.php';

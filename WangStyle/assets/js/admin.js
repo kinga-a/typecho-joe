@@ -1,49 +1,97 @@
 document.addEventListener('DOMContentLoaded', () => {
 	$(function () {
-		/* 初始化菜单 */
-		$('#typecho-nav-list .child li:eq(0)').remove();
-		var e = $('#typecho-nav-list .child:eq(0)').html();
-		var a = $('#typecho-nav-list .child:eq(1)').html();
-		var i = $('#typecho-nav-list .child:eq(2)').html();
-		var l = $('#typecho-nav-list .child:eq(3)').html();
-		/* 侧边栏菜单 */
+		/* Typecho 1.3 起，后台菜单改为顶栏 <menu><li><a>父项</a><menu><li>子项</li></menu></li></menu>，
+		   不再渲染旧的 #typecho-nav-list。这里从顶栏菜单提取四个分组（控制台/撰写/管理/设置），
+		   重建 WangStyle 的滑出式侧边栏。 */
+		var $topMenu = $('.typecho-head-nav menu');
+		var $groups = $topMenu.children('li').has('menu');
+
+		function groupHtml(idx) {
+			var $g = $groups.eq(idx);
+			return $g.length ? ($g.children('menu').html() || '') : '';
+		}
+		/* e=控制台  a=撰写  i=管理  l=设置 */
+		var e = groupHtml(0),
+			a = groupHtml(1),
+			i = groupHtml(2),
+			l = groupHtml(3);
+
+		/* 侧边栏用户信息 */
 		var r = '<div class="user-info"><a href="' + UserLink + '"><img src="' + UserPic + 's=100" /></a><p>Hi，' + UserName + '</p></div>';
-		if ('administrator' == UserGroup) var o = '<div class="user-nav"><ul><li><a href="' + AdminLink + 'index.php"><i class="zm zm-zu"></i>主页<i></i></a></li><li class="menu-li"><a href="javascript:;"><i class="zm zm-quanjushuxing"></i>全局<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + e + '</ul></li><li class="menu-li"><a href="javascript:;"><i class="zm zm-zhuomiankuaijiefangshi"></i>撰写<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + a + '</li></ul></li><li class="menu-li"><a href="javascript:;"><i class="zm zm-leibie"></i>管理<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + i + '</ul></li><li class="menu-li"><a href="javascript:;"><i class="zm zm-shezhi"></i>设置<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + l + '</li></ul></div>';
-		else if ('editor' == UserGroup || 'contributor' == UserGroup) o = '<div class="user-nav"><ul><li><a href="' + AdminLink + 'index.php"><i class="zm zm-zu"></i>主页</a></li><li><a href="' + AdminLink + 'profile.php"><i class="zm zm-shezhi"></i>个人设置</a></li><li><a href="' + AdminLink + 'write-post.php"><i class="zm zm-bianji"></i>撰写文章</a></li><li><a href="' + AdminLink + 'manage-posts.php"><i class="zm zm-leibie"></i>我的文章</a></li><li><a href="' + AdminLink + '/manage-comments.php"><i class="zm zm-quanjushuxing"></i>评论管理</a></li></ul></div>';
-		else o = '<div class="user-nav"><ul><li><a href="' + AdminLink + 'index.php"><i class="zm zm-zu"></i>主页</a></li><li><a href="' + AdminLink + 'profile.php"><i class="zm zm-shezhi"></i>个人设置</a></li></ul></div>';
+		if ('administrator' == UserGroup) {
+			var o = '<div class="user-nav"><ul>'
+				+ '<li><a href="' + AdminLink + 'index.php"><i class="zm zm-zu"></i>主页<i></i></a></li>'
+				+ '<li class="menu-li"><a href="javascript:;"><i class="zm zm-quanjushuxing"></i>全局<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + e + '</ul></li>'
+				+ '<li class="menu-li"><a href="javascript:;"><i class="zm zm-zhuomiankuaijiefangshi"></i>撰写<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + a + '</ul></li>'
+				+ '<li class="menu-li"><a href="javascript:;"><i class="zm zm-leibie"></i>管理<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + i + '</ul></li>'
+				+ '<li class="menu-li"><a href="javascript:;"><i class="zm zm-shezhi"></i>设置<i class="zm zm-sanJiaoBottom"></i></a><ul class="menu-ul">' + l + '</ul></li>'
+				+ '</ul></div>';
+		} else if ('editor' == UserGroup || 'contributor' == UserGroup) {
+			var o = '<div class="user-nav"><ul>'
+				+ '<li><a href="' + AdminLink + 'index.php"><i class="zm zm-zu"></i>主页</a></li>'
+				+ '<li><a href="' + AdminLink + 'profile.php"><i class="zm zm-shezhi"></i>个人设置</a></li>'
+				+ '<li><a href="' + AdminLink + 'write-post.php"><i class="zm zm-bianji"></i>撰写文章</a></li>'
+				+ '<li><a href="' + AdminLink + 'manage-posts.php"><i class="zm zm-leibie"></i>我的文章</a></li>'
+				+ '<li><a href="' + AdminLink + 'manage-comments.php"><i class="zm zm-quanjushuxing"></i>评论管理</a></li>'
+				+ '</ul></div>';
+		} else {
+			var o = '<div class="user-nav"><ul>'
+				+ '<li><a href="' + AdminLink + 'index.php"><i class="zm zm-zu"></i>主页</a></li>'
+				+ '<li><a href="' + AdminLink + 'profile.php"><i class="zm zm-shezhi"></i>个人设置</a></li>'
+				+ '</ul></div>';
+		}
+
 		if ('' != UserGroup) {
-			$('#typecho-nav-list').html(r + o),
-				$('.typecho-head-nav .operate').eq(0).prepend('<a id="dark-mode" href="javascript:;"><i class="zm zm-heiye"></i></a>'),
-				$('.typecho-head-nav .operate').eq(0).prepend('<a id="tonav" href="javascript:;"><i class="zm zm-caidan"></i></a>'),
-				$('#typecho-nav-list').before('<div class="proup"></div>'),
+			/* 1.3 没有 #typecho-nav-list 时，动态创建一个挂到 body */
+			var $nav = $('#typecho-nav-list');
+			if (!$nav.length) {
+				$nav = $('<nav id="typecho-nav-list"></nav>').appendTo('body');
+			}
+			$nav.html(r + o);
+
+			var $operate = $('.typecho-head-nav .operate').eq(0);
+			if ($operate.length) {
+				$operate.prepend('<a id="dark-mode" href="javascript:;"><i class="zm zm-heiye"></i></a>');
+				$operate.prepend('<a id="tonav" href="javascript:;"><i class="zm zm-caidan"></i></a>');
+				$nav.before('<div class="proup"></div>');
+
 				$('#tonav').click(function (event) {
-					event.stopPropagation(), $('#typecho-nav-list').toggle();
+					event.stopPropagation();
+					$nav.toggle();
 					$('.proup').toggle();
-				}),
+				});
 				$(document).click(function (event) {
-					var _con = $('#typecho-nav-list');
+					var _con = $nav;
 					if (!_con.is(event.target) && _con.has(event.target).length == 0) {
-						$('#typecho-nav-list').hide();
+						$nav.hide();
 						$('.proup').hide();
 					}
 				});
+			}
+
 			if (MenuTitle == '个人设置') {
 				$('.profile-avatar:eq(0)').attr('src', UserPic + 's=640');
 				$('.typecho-page-main div:eq(0)').attr('style', 'text-align:center');
 			}
 		}
-		$('#typecho-nav-list li.focus').parent('.menu-ul').show();
+
+		/* 展开当前所在分组 */
+		var $focusLi = $('#typecho-nav-list li.focus');
+		$focusLi.closest('.menu-ul').show();
 		$('body').on('click', '.menu-li', function () {
-			$(this).find('.menu-ul').is(':hidden') && $('.menu-ul').hide(200), $(this).find('.menu-ul').slideToggle(200);
+			$(this).find('.menu-ul').is(':hidden') && $('.menu-ul').not($(this).find('.menu-ul')).hide(200);
+			$(this).find('.menu-ul').slideToggle(200);
 		});
-		/* 全屏按钮 */
+
+		/* 编辑器全屏 */
 		$('body').on('click', '#wmd-fullscreen-button', function () {
 			$('.main').addClass('main-in');
 		});
 		$('body').on('click', '#wmd-exit-fullscreen-button', function () {
 			$('.main').removeClass('main-in');
 		});
-		/* 页面调整 */
+
+		/* 页面微调 */
 		$('.typecho-list-table colgroup').remove();
 		if ('网站概要' == MenuTitle) {
 			$('.typecho-page-title h2').hide();
@@ -70,22 +118,24 @@ document.addEventListener('DOMContentLoaded', () => {
 				$('.typecho-list-table tr').find('td:eq(4)').css('display', 'block');
 			}
 		}
-		/* 显示canvas 图片 */
+
+		/* 显示 canvas 图片 */
 		$('tbody tr .comment-content p').each(function (i, item) {
-			let str = $(item).html();
+			var str = $(item).html();
 			if (!/\{!\{.*\}!\}/.test(str)) return;
 			str = str.replace(/{!{/, '').replace(/}!}/, '');
 			$(item).html('<img src="' + str + '" />');
 		});
+
 		/* 暗色模式 */
 		if (localStorage.getItem('dark-mode')) {
 			$('html').attr('dark-mode', 'dark-mode');
 			$('#dark-mode').html('<i class="zm zm-baitian"></i>');
 		} else {
-			$('html').removeAttr('dark-mode', 'dark-mode');
+			$('html').removeAttr('dark-mode');
 			$('#dark-mode').html('<i class="zm zm-heiye"></i>');
 		}
-		$('#dark-mode').on('click', function () {
+		$('body').on('click', '#dark-mode', function () {
 			if ($('html').attr('dark-mode')) {
 				$('html').removeAttr('dark-mode');
 				localStorage.removeItem('dark-mode');
