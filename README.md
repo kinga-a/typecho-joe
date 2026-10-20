@@ -1,2 +1,2 @@
-# typecho-joe
-typecho主题
+# typecho-plugins
+typecho插件
